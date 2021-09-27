@@ -7,8 +7,8 @@ for i in range(2):
     player = Player(name_player, game)
 
 game.start_game()
-player_one = game.get_player_by_id(1)
-player_two = game.get_player_by_id(2)
+game.show_rating()
+game.next_round()
 
 i = 0
 while i < 9:
@@ -23,10 +23,15 @@ while i < 9:
 			print("{:-^40s}".format("-"))
 			if game.player_move(player, input("Digite um campo de 0 à 8 para marcar.")):
 				i += 1
-				print(i)
+				# print(i)
 				break
 			else:
 				pass
+	game.next_round()
+	if game.check_winner():
+		break
+
+
 
 print("{:-^40s}".format("-"))
 print("{:*^20s}".format("O jogo acabou"))

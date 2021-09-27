@@ -1,3 +1,6 @@
+from itertools import chain, combinations
+
+
 class Game:
 
     '''
@@ -7,7 +10,7 @@ class Game:
         field_values       (iterable): Nome do cliente.
         game_round         (int): Cpf do cliente. Deve ser passado com pontos e traços.
         players            (iterable): Saldo do cliente.
-        _circles_points     (iterable): Número da agencia do cliente.
+        circles_points     (iterable): Número da agencia do cliente.
         squares_points     (iterable): Número da conta do cliente.
     '''
 
@@ -23,9 +26,9 @@ class Game:
 
     def __init__(self):
         self.field_values = [None, None, None, None, None, None, None, None, None]
-        self.game_round = None
+        self.game_round = 0
         self.players = []
-        self._circles_points = []
+        self.circles_points = []
         self.squares_points = []
 
 
@@ -44,6 +47,15 @@ class Game:
         for player in self.players:
             if player.id == id_player:
                 return player
+
+
+    def show_rating(self):
+        for player in self.players:
+            print("{:-^40s}".format("-"))
+            print("{:*^40s}".format(f"Player {player.name}"))
+            print("{}".format(f"Vitórias: {player.wins}"))
+            print("{}".format(f"Derrotas: {player.defeats}"))
+            print("{:-^40s}".format("-"))
 
 
     def start_game(self):
@@ -66,9 +78,35 @@ class Game:
             return False
 
 
-    def check_wins(self):
-        if self.game_round == 3:
-            pass
+    def _is_winner(self, points_list):
+        if self.game_round >= 3:
+            combinations_list = self.powerset(points_list)
+            for combination in combinations_list:
+                if len(combination) == 3:
+                    if sum(combination) == 15:
+                        return True 
+
+
+    def check_winner(self):
+        if self._is_winner(self.circles_points):
+            print("{:-^40s}".format("-"))
+            print("{:*^40s}".format(f"Jogador 1 wins!"))
+            print("{:*^40s}".format(f" ＼(°o°)／ Parabêns {self.get_player_by_id(1).name} ＼(°o°)／ "))
+            print("{:-^40s}".format("-"))
+            return True
+        elif self._is_winner(self.squares_points):
+            print("{:-^40s}".format("-"))
+            print("{:*^40s}".format(f"Jogador 2 wins!"))
+            print("{:*^40s}".format(f" ＼(°o°)／ Parabêns {self.get_player_by_id(2).name} ＼(°o°)／ "))
+            print("{:-^40s}".format("-"))
+            return True
+
+
+    def next_round(self):
+        self.game_round += 1
+        print("{:-^60s}".format("-"))
+        print("{:*^60s}".format(f"Round {self.game_round}"))
+        print("{:-^60s}".format("-"))
 
 
 class Player:
