@@ -1,4 +1,5 @@
 from itertools import chain, combinations
+from validations import validate_field, validate_player_name
 
 
 class Game:
@@ -63,27 +64,32 @@ class Game:
         print("O jogo começou!")
 
 
+    def _add_point(self, player, field_point):
+        if player.team == "Circles":
+            self.circles_points.append(self.field_points[field])
+        elif player.team == "Squares":
+            self.squares_points.append(self.field_points[field])
+
+
     def player_move(self, player, field):
-        field = int(field)
-        if field >= 0 and field <= 8:
-            if self.field_values[field] == None:
-                self.field_values[field] = player.team
-                print(f"O campo {field} foi marcado para o time {player.team} com sucesso.")
-                return True
-            else:
-                print("Este campo já foi marcado")
-                return False
-        else:
-            print("Digite um campo de 0 à 8.")
+        if not self._validate_field(field, self.field_values):
             return False
+
+        field = int(field)
+        self.field_values[field] = player.team
+        self._add_point(player, field)
+        print(f"O campo {field} foi marcado para o time {player.team} com sucesso.")
 
 
     def _is_winner(self, points_list):
         if self.game_round >= 3:
+            print("Eaeeee")
             combinations_list = self.powerset(points_list)
             for combination in combinations_list:
                 if len(combination) == 3:
+                    print("Olá")
                     if sum(combination) == 15:
+                        print("POiii")
                         return True 
 
 
@@ -107,6 +113,10 @@ class Game:
         print("{:-^60s}".format("-"))
         print("{:*^60s}".format(f"Round {self.game_round}"))
         print("{:-^60s}".format("-"))
+
+
+    def end_game(self):
+        pass
 
 
 class Player:
