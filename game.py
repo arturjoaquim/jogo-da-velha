@@ -1,5 +1,4 @@
 from itertools import chain, combinations
-from validations import validate_field, validate_player_name
 
 
 class Game:
@@ -29,6 +28,7 @@ class Game:
         self.field_values = [None, None, None, None, None, None, None, None, None]
         self.game_round = 0
         self.players = []
+        self.winner = None
         self.circles_points = []
         self.squares_points = []
 
@@ -64,7 +64,7 @@ class Game:
         print("O jogo começou!")
 
 
-    def _add_point(self, player, field_point):
+    def _add_point(self, team, field):
         if player.team == "Circles":
             self.circles_points.append(self.field_points[field])
         elif player.team == "Squares":
@@ -72,9 +72,6 @@ class Game:
 
 
     def player_move(self, player, field):
-        if not self._validate_field(field, self.field_values):
-            return False
-
         field = int(field)
         self.field_values[field] = player.team
         self._add_point(player, field)
@@ -83,40 +80,43 @@ class Game:
 
     def _is_winner(self, points_list):
         if self.game_round >= 3:
-            print("Eaeeee")
             combinations_list = self.powerset(points_list)
             for combination in combinations_list:
                 if len(combination) == 3:
-                    print("Olá")
                     if sum(combination) == 15:
-                        print("POiii")
                         return True 
 
 
     def check_winner(self):
-        if self._is_winner(self.circles_points):
-            print("{:-^40s}".format("-"))
-            print("{:*^40s}".format(f"Jogador 1 wins!"))
-            print("{:*^40s}".format(f" ＼(°o°)／ Parabêns {self.get_player_by_id(1).name} ＼(°o°)／ "))
-            print("{:-^40s}".format("-"))
-            return True
-        elif self._is_winner(self.squares_points):
-            print("{:-^40s}".format("-"))
-            print("{:*^40s}".format(f"Jogador 2 wins!"))
-            print("{:*^40s}".format(f" ＼(°o°)／ Parabêns {self.get_player_by_id(2).name} ＼(°o°)／ "))
-            print("{:-^40s}".format("-"))
-            return True
+        players_scores = [self.circles_points, self.squares_points]
+        for index, player_score in enumerate(players_scores):
+            print(index, player_score)
+            if self._is_winner(player_score):
+                self.winner = self.get_player_by_id(index + 1)
+                return True
 
 
-    def next_round(self):
+    def start_round(self):
         self.game_round += 1
         print("{:-^60s}".format("-"))
         print("{:*^60s}".format(f"Round {self.game_round}"))
         print("{:-^60s}".format("-"))
 
 
+    def end_round(self):
+        if self.winner:
+            print("{:-^40s}".format("-"))
+            print("{:*^40s}".format(f"Jogador 1 wins!"))
+            print("{:*^40s}".format(f" ＼(°o°)／ Parabêns {self.winner.name} ＼(°o°)／ "))
+            print("{:-^40s}".format("-"))
+            return True
+
     def end_game(self):
-        pass
+        if self.winner:
+            print("{:-^40s}".format("-"))
+            print("{:*^40s}".format("O jogo acabou"))
+            print("{:-^40s}".format("-"))
+            return True
 
 
 class Player:

@@ -2,10 +2,11 @@ def validate_field(field_list, field):
     try:
         field = int(field)
     except (ValueError):
-        print("Digite valores inteiros para selecionar um campo.")
+        print("Digite valores inteiros para preencher um campo.")
+        return False
 
     if field >= 0 and field <= 8:
-        if self.field_values[field] == None:
+        if field_list[field] == None:
             return True
         else:
             print("Este campo já foi preenchido.")
