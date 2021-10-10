@@ -1,7 +1,6 @@
 from game import Game, GameValidations, Player
 
 
-
 def main():
     game = Game()
     game_validations = GameValidations(game)
@@ -14,19 +13,18 @@ def main():
     #             player = Player(name_player, game)
     #             break
 
-    # game.start_game()
+    # 
 
-    loop = True
-
-    while loop:
-        i = 0
+    while True:
+        game.start_game()
         game.show_rating()
+        i = 0
         while i < 9:
             game.start_round()
-            for player in game.players:
+            for player_index, player in enumerate(game.players):
                 while True:
                     print("{:-^40s}".format("-"))
-                    print("{:*^40s}".format(f"Jogador {player.id}"))
+                    print("{:*^40s}".format(f"Jogador {player_index}"))
                     print("{:-^40s}".format("-"))
                     field_index = input("Digite um campo de 0 à 8 para marcar.")
 
@@ -36,9 +34,14 @@ def main():
                         break
                     else:
                         pass
-                if game.check_winner(): break
-            if game.end_round(): break
-        loop = game.end_game()
+                if game_validations.validate_winner(player.points):
+                    break
+            if game_validations.validate_winner(player.points):
+                game.end_round()
+                break
+        if game_validations.validate_winner(player.points):
+            game.end_game()
+            break
 
 
 main()

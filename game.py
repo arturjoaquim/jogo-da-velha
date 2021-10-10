@@ -28,6 +28,12 @@ class Game:
     #     self.players.append(player)
     #     print(f"Player {player.get_player_name()} foi adicionado ao jogo!")
 
+    def show_message(self, *messages):
+        print("{:-^60s}".format("-"))
+        for message in messages:
+            print("{:-^60s}".format(message))
+        print("{:-^60s}".format("-"))
+
     def _set_players_team(self): # Mudar funcionalidade
         self.players[0].team = "Circles"
         self.players[1].team = "Squares"
@@ -60,13 +66,13 @@ class Game:
     #     self._add_point(player, field)
     #     print(f"O campo {field} foi marcado para o time {player.team} com sucesso.")
 
-    def _is_winner(self, points_list):
-        if self.game_round >= 3:
-            combinations_list = self.powerset(points_list)
-            for combination in combinations_list:
-                if len(combination) == 3:
-                    if sum(combination) == 15:
-                        return True 
+    # def _is_winner(self, points_list):
+    #     if self.game_round >= 3:
+    #         combinations_list = self.powerset(points_list)
+    #         for combination in combinations_list:
+    #             if len(combination) == 3:
+    #                 if sum(combination) == 15:
+    #                     return True 
 
     # def check_winner(self):
     #     players_scores = [self.circles_points, self.squares_points]
@@ -78,24 +84,13 @@ class Game:
 
     def start_round(self):
         self.game_round += 1
-        print("{:-^60s}".format("-"))
-        print("{:*^60s}".format(f"Round {self.game_round}"))
-        print("{:-^60s}".format("-"))
+        self.show_message(f"Round {self.game_round}")
 
     def end_round(self):
-        if self.winner:
-            print("{:-^40s}".format("-"))
-            print("{:*^40s}".format(f"Jogador 1 wins!"))
-            print("{:*^40s}".format(f" ＼(°o°)／ Parabêns {self.winner.name} ＼(°o°)／ "))
-            print("{:-^40s}".format("-"))
-            return True
+        self.show_message("Jogador 1 wins", f" ＼(°o°)／ Parabêns {self.winner.name} ＼(°o°)／ ")
 
     def end_game(self):
-        if self.winner:
-            print("{:-^40s}".format("-"))
-            print("{:*^40s}".format("O jogo acabou"))
-            print("{:-^40s}".format("-"))
-            return True
+        self.show_message("O jogo acabou")
 
 
 class GameValidations():
@@ -126,13 +121,13 @@ class GameValidations():
             print("O valor do campo precisa estar entre 0 e 8.")
             return False
 
-    def is_winner(self, points_list):
+    def validate_winner(self, points_list):
         # if self.game_round >= 3:
         combinations_list = self.powerset(points_list)
         for combination in combinations_list:
             if len(combination) == 3:
                 if sum(combination) == 15:
-                    return True 
+                    return True
 
 
     # def validate_player_name(player_name):
