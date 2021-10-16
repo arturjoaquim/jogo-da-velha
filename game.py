@@ -8,7 +8,7 @@ class Game:
 
     Atributos:
         field_values       (iterable): Nome do cliente.
-        game_round         (int): Cpf do cliente. Deve ser passado com pontos e traços.
+        round         (int): Cpf do cliente. Deve ser passado com pontos e traços.
         players            (iterable): Saldo do cliente.
         circles_points     (iterable): Número da agencia do cliente.
         squares_points     (iterable): Número da conta do cliente.
@@ -19,7 +19,7 @@ class Game:
     def __init__(self):
         self.fields = [None, None, None, None, None, None, None, None, None]
         self.players = []
-        self.game_round = 0
+        self.round = 0
         # self.circles_points = []
         # self.squares_points = []
 
@@ -35,8 +35,10 @@ class Game:
         print("{:-^60s}".format("-"))
 
     def _set_players_team(self): # Mudar funcionalidade
-        self.players[0].team = "Circles"
-        self.players[1].team = "Squares"
+        for player in self.players:
+            # self.show_message(f"Player {player.id}, escolha seu time [X/0].")
+            team_player = input(f"Player {player.id}, escolha seu time [X/0].")
+            player.team = team_player
 
     # def get_player_by_id(self, id_player):
     #     for player in self.players:
@@ -45,15 +47,11 @@ class Game:
 
     def show_rating(self):
         for player in self.players:
-            print("{:-^40s}".format("-"))
-            print("{:*^40s}".format(f"Player {player.name}"))
-            print("{}".format(f"Vitórias: {player.wins}"))
-            print("{}".format(f"Derrotas: {player.defeats}"))
-            print("{:-^40s}".format("-"))
+            self.show_message(f"Player {player.name}", f"Vitórias: {player.wins}", f"Derrotas: {player.defeats}")
 
-    # def start_game(self):
-    #     self._set_players_team()
-    #     print("O jogo começou!")
+    def start_game(self):
+        self.show_message("O jogo começou!", "Vamos para escolha de times")
+        self._set_players_team()
 
     def _add_point(self, player, field_index):
         point = self.points[field_index]
@@ -67,7 +65,7 @@ class Game:
     #     print(f"O campo {field} foi marcado para o time {player.team} com sucesso.")
 
     # def _is_winner(self, points_list):
-    #     if self.game_round >= 3:
+    #     if self.round >= 3:
     #         combinations_list = self.powerset(points_list)
     #         for combination in combinations_list:
     #             if len(combination) == 3:
@@ -83,14 +81,14 @@ class Game:
     #             return True
 
     def start_round(self):
-        self.game_round += 1
-        self.show_message(f"Round {self.game_round}")
+        self.round += 1
+        self.show_message(f"Round {self.round}")
 
-    def end_round(self):
-        self.show_message("Jogador 1 wins", f" ＼(°o°)／ Parabêns {self.winner.name} ＼(°o°)／ ")
+    # def end_round(self):
+    #     self.show_message("Jogador 1 wins", f" ＼(°o°)／ Parabêns {self.winner.name} ＼(°o°)／ ")
 
-    def end_game(self):
-        self.show_message("O jogo acabou")
+    # def end_game(self):
+    #     self.show_message("O jogo acabou")
 
 
 class GameValidations():
@@ -122,7 +120,7 @@ class GameValidations():
             return False
 
     def validate_winner(self, points_list):
-        # if self.game_round >= 3:
+        # if self.round >= 3:
         combinations_list = self.powerset(points_list)
         for combination in combinations_list:
             if len(combination) == 3:
@@ -143,12 +141,15 @@ class GameValidations():
 
 class Player():
 
+    # id = 1
+
     def __init__(self, game):
         self.game = game
         self.points = []
         self.team = "None"
         self.wins = None
         self.defeats = None
+        # Player.id += 1
         game.players.append(self)
 
     def move(self, field_index):
